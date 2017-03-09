@@ -4,6 +4,8 @@ This is a [CloudFormation][] [custom resource][] for [API Gateway][] [custom dom
 
 It's basically a [prollyfill][] for the conspicuously missing `AWS::ApiGateway::DomainName` resource type, which will likely land if/when [AWS Certificate Manager][] supports API Gateway.
 
+If you need to renew your certificates or would like to just use Route53 to create Let's Encrypt certificates, check out [certbot-route53.sh][].
+
 Features
 --------
 
