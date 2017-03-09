@@ -2,6 +2,8 @@
 
 This is a [CloudFormation][] [custom resource][] for [API Gateway][] [custom domains][]. It runs [Certbot][] on [Lambda][] to create certificates, and automatically creates [Route53][] DNS records to respond to [Let's Encrypt][] domain ownership challenges.
 
+It's basically a [prollyfill][] for the conspicuously missing `AWS::ApiGateway::DomainName` resource type, which will likely land if/when [AWS Certificate Manager][] supports API Gateway.
+
 Setup
 -----
 
@@ -126,3 +128,5 @@ Thanks
 [docker-lambda]: https://github.com/lambci/docker-lambda
 [Michael Hart]: https://twitter.com/hichaelmart
 [Let's Encrypt Terms of Service]: https://gist.github.com/kennwhite/9541c8f37ec2994352c4554ca2afeece
+[prollyfill]: https://twitter.com/slexaxton/status/257543702124306432?lang=en
+[AWS Certificate Manager]: https://aws.amazon.com/certificate-manager/
