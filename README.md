@@ -4,6 +4,14 @@ This is a [CloudFormation][] [custom resource][] for [API Gateway][] [custom dom
 
 It's basically a [prollyfill][] for the conspicuously missing `AWS::ApiGateway::DomainName` resource type, which will likely land if/when [AWS Certificate Manager][] supports API Gateway.
 
+Features
+--------
+
+- **Fast**: Certificates are installed and enabled in minutes
+- **Free**: Certificates cost nothing (but you can [donate][])
+- **Easy**: Certificates need only 14 lines in a CloudFormation template
+- **Safe**: Certificates never touch your email or machine
+
 Setup
 -----
 
@@ -101,6 +109,12 @@ How it works
 
 When a custom domain name is first created in your stack, CloudFormation calls a [node.js function][] in a [Lambda-backed custom resource][], which in turn launches [Certbot][] in a Python subprocess. Certbot then contacts Let's Encrypt to get a challenge string, which is placed in a TXT record on Route53. Once the record is live, Certbot tells Let's Encrypt to verify it, and once it's verified, Let's Encrypt sends the certificate back to Certbot and then to API Gateway, where it's used to create a custom domain.
 
+Todo
+----
+
+- Automate certificate renewal
+- Revoke certificates on deletion
+
 Thanks
 ------
 
@@ -130,3 +144,4 @@ Thanks
 [Let's Encrypt Terms of Service]: https://gist.github.com/kennwhite/9541c8f37ec2994352c4554ca2afeece
 [prollyfill]: https://twitter.com/slexaxton/status/257543702124306432?lang=en
 [AWS Certificate Manager]: https://aws.amazon.com/certificate-manager/
+[donate]: https://letsencrypt.org/donate/
