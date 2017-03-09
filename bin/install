@@ -1,0 +1,9 @@
+#!/bin/sh
+
+easy_install virtualenv
+virtualenv /var/task
+source /var/task/bin/activate
+pip install certbot
+find . -name '*.py' -delete
+cd /var/task
+zip -qr9 /tmp/dist/function.zip *

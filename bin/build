@@ -1,0 +1,15 @@
+#!/bin/sh
+
+chmod a+x index.js bin/*
+
+docker volume create \
+  --name certbot-lambda
+
+docker run \
+  --interactive \
+  --rm \
+  --volume certbot-lambda:/var/task \
+  --volume $PWD/bin/install:/tmp/install \
+  --volume $PWD/dist:/tmp/dist \
+  lambci/lambda:build \
+  /tmp/install

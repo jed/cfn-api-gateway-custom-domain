@@ -1,0 +1,18 @@
+#!/bin/sh
+
+DOMAIN='jedschmidt.com'
+TARGET='https://twitter.com/jedschmidt'
+
+(cd example; zip index.zip index.js)
+
+aws s3 sync example s3://cfn-api-gateway-custom-domain/example
+
+aws cloudformation deploy \
+  --template-file example/stack.template \
+  --stack-name jedschmidt-redirect \
+  --capabilities CAPABILITY_IAM \
+  --parameter-overrides DomainName=$DOMAIN TargetLocation=$TARGET
+
+# aws cloudformation describe-stacks \
+#   --stack-name api-gateway-custom-domain-test \
+#   --query 'Stacks[0]'

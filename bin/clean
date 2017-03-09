@@ -1,0 +1,4 @@
+#!/bin/sh
+
+docker volume rm certbot-lambda
+rm -rf dist/function.zip

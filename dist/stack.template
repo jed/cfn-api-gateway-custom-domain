@@ -1,0 +1,76 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: API Gateway custom domains, backed by Let's Encrypt certificates
+
+Parameters:
+  LetsEncryptAccountEmail:
+    Type: String
+    Description: Email address of Let's Encrypt account
+
+  LetsEncryptAgreeTOS:
+    Type: String
+    Description: Do you agree to the ACME Subscriber Agreement?
+    ConstraintDescription: You must agree to the terms.
+    AllowedValues:
+    - true
+
+  LetsEncryptManualPublicIpLoggingOk:
+    Type: String
+    Description: Are you okay with Let's Encrypt logging your public IP address?
+    ConstraintDescription: You must allow IP logging.
+    AllowedValues:
+    - true
+
+Resources:
+  CertbotLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cfn-api-gateway-custom-domain
+        S3Key: function.zip
+      Environment:
+        Variables:
+          EMAIL_ADDRESS: !Ref LetsEncryptAccountEmail
+      Handler: index.handler
+      MemorySize: 256
+      Role: !GetAtt CertbotLambdaExecution.Arn
+      Runtime: nodejs4.3
+      Timeout: 300
+
+  CertbotLambdaExecution:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+      - PolicyName: UpdateDNSRecords
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - route53:ChangeResourceRecordSets
+            - route53:GetChange
+            - route53:GetHostedZone
+            Resource: '*'
+      - PolicyName: UpdateDomains
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - apigateway:POST
+            - apigateway:DELETE
+            Resource: '*'
+
+Outputs:
+  ServiceToken:
+    Description: ARN of Certbot Lambda
+    Value: !GetAtt CertbotLambda.Arn

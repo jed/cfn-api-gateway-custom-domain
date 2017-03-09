@@ -1,0 +1,5 @@
+#!/bin/sh
+
+zip dist/function.zip index.js
+
+aws s3 sync dist s3://cfn-api-gateway-custom-domain --acl public-read

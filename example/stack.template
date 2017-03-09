@@ -1,0 +1,85 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+
+Parameters:
+  DomainName:
+    Type: String
+    Description: Domain name of the redirected site
+
+  TargetLocation:
+    Type: String
+    Description: URL of the target redirect
+
+Resources:
+  MyEndpoint:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.handler
+      Runtime: nodejs4.3
+      CodeUri:
+        Bucket: cfn-api-gateway-custom-domain
+        Key: example/index.zip
+
+      Environment:
+        Variables:
+          TARGET_LOCATION: !Ref TargetLocation
+      Events:
+        get:
+          Type: Api
+          Properties:
+            Path: /
+            Method: get
+            RestApiId: !Ref MyAPI
+
+  MyAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      DefinitionBody:
+        swagger: 2.0
+        paths:
+          /:
+            get:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MyEndpoint.Arn}/invocations
+
+  MyHostedZone:
+    Type: AWS::Route53::HostedZone
+    Properties:
+      Name: !Ref DomainName
+
+  ApiGatewayCustomDomain:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/cfn-api-gateway-custom-domain/stack.template
+      Parameters:
+        LetsEncryptAccountEmail: email@example.com
+        LetsEncryptAgreeTOS: true
+        LetsEncryptManualPublicIpLoggingOk: true
+
+  MyDomain:
+    Type: Custom::ApiGatewayCustomDomain
+    Properties:
+      ServiceToken: !GetAtt ApiGatewayCustomDomain.Outputs.ServiceToken
+      HostedZoneId: !Ref MyHostedZone
+      Subdomain: www
+
+  MyDNSRecord:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneId: !Ref MyHostedZone
+      RecordSets:
+      - Type: A
+        Name: !GetAtt MyDomain.domainName
+        AliasTarget:
+          HostedZoneId: Z2FDTNDATAQYW2 # This is hardcoded for all CloudFormation templates
+          DNSName: !GetAtt MyDomain.distributionDomainName
+
+  MyMapping:
+    Type: AWS::ApiGateway::BasePathMapping
+    Properties:
+      DomainName: !GetAtt MyDomain.domainName
+      RestApiId: !Ref MyAPI
+      Stage: prod
