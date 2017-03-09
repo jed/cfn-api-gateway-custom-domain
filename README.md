@@ -112,8 +112,8 @@ When a custom domain name is first created in your stack, CloudFormation calls a
 Todo
 ----
 
-- Automate certificate renewal
-- Revoke certificates on deletion
+- [Automate certificate renewal](#1)
+- [Revoke certificates on deletion](#2)
 
 Thanks
 ------
