@@ -10,7 +10,7 @@ Before you get started, you'll need to:
 1. create a Route53 [public hosted zone][] for the domain, and
 2. point the domain at [your zone's nameservers][].
 
-Since Let's Encrypt needs to be able to contact Route53, your DNS settings need to be in effect already.
+Since Let's Encrypt needs to be able to contact Route53, your DNS settings must be in effect already.
 
 Usage
 -----
@@ -92,7 +92,19 @@ At this point, you've done all you need to create/update/deploy your stack and g
 Example
 -------
 
-See the included [example][] for a demo redirect app configured entirely with CloudFormation.
+See the included [example][] for a simple website redirect app configured entirely with CloudFormation.
+
+How it works
+------------
+
+When a custom domain name is first created in your stack, CloudFormation calls a [node.js function][] in a [Lambda-backed custom resource][], which in turn launches [Certbot][] in a Python subprocess. Certbot then contacts Let's Encrypt to get a challenge string, which is placed in a TXT record on Route53. Once the record is live, Certbot tells Let's Encrypt to verify it, and once it's verified, Let's Encrypt sends the certificate back to Certbot and then to API Gateway, where it's used to create a custom domain.
+
+Thanks
+------
+
+- [Let's Encrypt][] for taking the tedium and cost out of making web sites more secure.
+- [Michael Hart][] overall really, but in particular for the amazing [docker-lambda][], without which this project would not be possible.
+- [Eric Hammond][], for his helpful [explorations of CloudFormation and Lambda][].
 
 [API Gateway]: https://aws.amazon.com/api-gateway
 [Lambda]: https://aws.amazon.com/lambda
@@ -107,3 +119,9 @@ See the included [example][] for a demo redirect app configured entirely with Cl
 [public hosted zone]: http://docs.aws.amazon.com/Route53/latest/DeveloperGuide/CreatingHostedZone.html
 [your zone's nameservers]: http://docs.aws.amazon.com/Route53/latest/DeveloperGuide/GetInfoAboutHostedZone.html
 [example]: https://github.com/jed/cfn-api-gateway-custom-domain/blob/master/example/stack.template
+[Lambda-backed custom resource]: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-custom-resources-lambda.html
+[node.js function]: https://github.com/jed/cfn-api-gateway-custom-domain/blob/master/index.js
+[explorations of CloudFormation and Lambda]: https://alestic.com
+[Eric Hammond]: https://alestic.com/about/
+[docker-lambda]: https://github.com/lambci/docker-lambda
+[Michael Hart]: https://twitter.com/hichaelmart
