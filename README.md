@@ -40,7 +40,7 @@ Usage
     You'll need to specify three things:
 
     - `LetsEncryptAccountEmail`: The email address associated with your Let's Encrypt account
-    - `LetsEncryptAgreeTOS`: That you agree to the Let's Encrypt Terms of Service. This must be `Yes`.
+    - `LetsEncryptAgreeTOS`: That you agree to the [Let's Encrypt Terms of Service][]. This must be `Yes`.
     - `LetsEncryptManualPublicIpLoggingOk`: That you're okay with Let's Encrypt logging the IP address of the Lambda used to run `certbot`. This must be `Yes`.
 
     This stack has only one output: `ServiceToken`. This can be accessed using `!GetAtt {your-logical-stack-name}.Outputs.ServiceToken`.
@@ -125,3 +125,4 @@ Thanks
 [Eric Hammond]: https://alestic.com/about/
 [docker-lambda]: https://github.com/lambci/docker-lambda
 [Michael Hart]: https://twitter.com/hichaelmart
+[Let's Encrypt Terms of Service]: https://gist.github.com/kennwhite/9541c8f37ec2994352c4554ca2afeece
