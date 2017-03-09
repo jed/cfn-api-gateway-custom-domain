@@ -42,7 +42,7 @@ Usage
         Properties:
           TemplateURL: https://s3.amazonaws.com/api-gateway-custom-domain/stack.template
           Parameters:
-            LetsEncryptAccountEmail: jasoninthehouse@gmail.com
+            LetsEncryptAccountEmail: me@jedschmidt.com
             LetsEncryptAgreeTOS: Yes
             LetsEncryptManualPublicIpLoggingOk: Yes
     ```

@@ -55,7 +55,7 @@ Resources:
     Properties:
       TemplateURL: https://s3.amazonaws.com/cfn-api-gateway-custom-domain/stack.template
       Parameters:
-        LetsEncryptAccountEmail: email@example.com
+        LetsEncryptAccountEmail: me@jedschmidt.com
         LetsEncryptAgreeTOS: true
         LetsEncryptManualPublicIpLoggingOk: true
 
