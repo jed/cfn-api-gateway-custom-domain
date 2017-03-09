@@ -67,29 +67,32 @@ Usage
 
     This resource returns the results of the [createDomainName][] function.
 
-At this point, you've done all you need to create/update/deploy your stack and get your certificate installed into API Gateway.
+At this point, you've done all you need to create/update/deploy your stack and get your certificate installed into API Gateway, but to user the domain you'll need to add an alias DNS record that resolves your domain to the CloudFront distribution created with your custom domain name, and then map the domain to a stage of your rest API:
 
-4. Finally, add an alias DNS record that resolves your domain to the CloudFront distribution created with your custom domain name, and then map the domain to a stage of your rest API:
+```yaml
+  MyDNSRecord:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneId: !Ref MyHostedZone
+      RecordSets:
+      - Type: A
+        Name: !GetAtt MyDomain.domainName
+        AliasTarget:
+          HostedZoneId: Z2FDTNDATAQYW2 # (hardcoded for all CloudFormation templates)
+          DNSName: !GetAtt MyDomain.distributionDomainName
 
-    ```yaml
-      MyDNSRecord:
-        Type: AWS::Route53::RecordSetGroup
-        Properties:
-          HostedZoneId: !Ref MyHostedZone
-          RecordSets:
-          - Type: A
-            Name: !GetAtt MyDomain.domainName
-            AliasTarget:
-              HostedZoneId: Z2FDTNDATAQYW2 # (hardcoded for all CloudFormation templates)
-              DNSName: !GetAtt MyDomain.distributionDomainName
+  MyPathMapping:
+    Type: AWS::ApiGateway::BasePathMapping
+    Properties:
+      DomainName: !GetAtt MyDomain.domainName
+      RestApiId: !Ref MyRestAPI
+      Stage: prod
+```
 
-      MyPathMapping:
-        Type: AWS::ApiGateway::BasePathMapping
-        Properties:
-          DomainName: !GetAtt MyDomain.domainName
-          RestApiId: !Ref MyRestAPI
-          Stage: prod
-    ```
+Example
+-------
+
+See the included [example][] for a demo redirect app configured entirely with CloudFormation.
 
 [API Gateway]: https://aws.amazon.com/api-gateway
 [Lambda]: https://aws.amazon.com/lambda
@@ -103,4 +106,4 @@ At this point, you've done all you need to create/update/deploy your stack and g
 [createDomainName]: http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/APIGateway.html#createDomainName-property
 [public hosted zone]: http://docs.aws.amazon.com/Route53/latest/DeveloperGuide/CreatingHostedZone.html
 [your zone's nameservers]: http://docs.aws.amazon.com/Route53/latest/DeveloperGuide/GetInfoAboutHostedZone.html
-[minimum viable template]: /jed/cfn-api-gateway-custom-domain/dist/example.template
+[example]: https://github.com/jed/cfn-api-gateway-custom-domain/blob/master/example/stack.template
