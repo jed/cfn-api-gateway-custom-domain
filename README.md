@@ -33,7 +33,7 @@ Usage
       MyHostedZone:
         Type: AWS::Route53::HostedZone
         Properties:
-          Name: jed.is
+          Name: jedschmidt.com
     ```
 
 2. Then, add an API Gateway Custom Domain stack to your template:
@@ -65,7 +65,7 @@ Usage
         Properties:
           ServiceToken: !GetAtt ApiGatewayCustomDomain.Outputs.ServiceToken
           HostedZoneId: !Ref MyHostedZone
-          Subdomain: who
+          Subdomain: www
     ```
 
     You'll need to specify two things:
