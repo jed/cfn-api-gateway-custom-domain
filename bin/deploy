@@ -13,6 +13,6 @@ aws cloudformation deploy \
   --capabilities CAPABILITY_IAM \
   --parameter-overrides DomainName=$DOMAIN TargetLocation=$TARGET
 
-# aws cloudformation describe-stacks \
-#   --stack-name api-gateway-custom-domain-test \
-#   --query 'Stacks[0]'
+aws cloudformation describe-stacks \
+  --stack-name jedschmidt-redirect \
+  --query 'Stacks[0]'
