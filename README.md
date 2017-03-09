@@ -1,5 +1,7 @@
 # cfn-api-gateway-custom-domain
 
+*[Ed note: in an amazing turn of events, this library was released mere hours before [AWS basically made it obsolete.](https://aws.amazon.com/about-aws/whats-new/2017/03/amazon-api-gateway-integrates-with-aws-certificate-manager-acm/)]*
+
 This is a [CloudFormation][] [custom resource][] for [API Gateway][] [custom domains][]. It runs [Certbot][] on [Lambda][] to create certificates, and automatically creates [Route53][] DNS records to respond to [Let's Encrypt][] domain ownership challenges.
 
 It's basically a [prollyfill][] for the conspicuously missing `AWS::ApiGateway::DomainName` resource type, which will likely land if/when [AWS Certificate Manager][] supports API Gateway.
